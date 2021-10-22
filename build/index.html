@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<style>
+	table, th, td {
+  	border: 1px solid black;
+	}
+</style>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+.dropbtn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {background-color: #ddd;}
+
+.dropdown:hover .dropdown-content {display: block;}
+
+.dropdown:hover .dropbtn {background-color: #3e8e41;}
+</style>
+
+
+
+
+
+
+<form action="/" method="POST">
+  <label for="fname">Qeuery String:</label><br>
+  <input type="text" id="fname" name="fname" value=""><br>
+  <input type="submit" value="Submit">
+</form>
+
+
+  </head>
+  <body>
+ <form action="" method="POST">
+  <label for="Option">Options found:</label>
+  <select id="option" name="option">
+    <option value="bulk insert">bulk insert</option>
+    <option value="write file">write file</option>
+    <option value="scan file">scan file</option>
+    <option value="expand table">expand table</option>
+	<option value="scan csv file">scan csv file</option>
+	<option value="ingest clipboard">ingest clipboard</option>
+	<option value="clipboard search">clipboard search</option>
+
+  </select>
+<input type="text" id="link" name="link" value=""><br>
+  <input type="submit" value="Submit">
+</form> 
+
+<!--Placeholder-->
+
+<form action="/" method="POST">
+  <input type="submit" name="clip" value="Copy to Clipboard">
+</form>
+
+  </body>
+</html>
