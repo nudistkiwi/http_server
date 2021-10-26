@@ -38,7 +38,50 @@ std::string clip="<form action=\"/\" method=\"POST\"><input type=\"submit\" name
     for(auto it:A){temp+=it+"&#13";//std::cout<<it<<std::endl;
     }*/
    // std::string out="<!DOCTYPE html><html><head>"+first+"<textarea rows=\"30\" cols=\"205\" placeholder=test>"+temp+"</textarea>"+query+op1+option(A)+op2+op+clip+"</body></html>";
+  
+   int k = 1;
+   /*
+       for (auto it : frame)
+       {
+           file.append(it);
+           if (k % cols == 0)
+           {
+               file.append("\n");
+           }
+           else
+           {
+               file.append(";");
+           }
+           k++;
+       }
+   */
+
+   int N;
+   const std::string filename = "New Microsoft Excel Worksheet.xlsx";
+   std::ifstream input(filename.c_str(), std::ios::binary);
+   std::ifstream src;
+   std::ofstream dst;
+   src.open("New Microsoft Excel Worksheet.xlsx", std::ios::in | std::ios::binary);
+   input.seekg(0, input.end);
+   N = input.tellg();
+   input.seekg(0, input.beg);
+   N = N - input.tellg();
+   char* data = new char[N];
+   input.read(data, N);
+   std::string help(data, N);
+   delete[] data;
+
+   std::ofstream stream("testo.xlsx", std::ios::binary);
+   stream <<A;
+   stream.close();
    std::string out="test.json";
+
+   dst.open("testo2.xlsx", std::ios::out | std::ios::binary);
+   dst << src.rdbuf();
+
+   src.close();
+   dst.close();
+
     return(out);};
 
 int main(//int argc, char* argv[]
