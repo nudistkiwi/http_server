@@ -23,7 +23,7 @@ std::cout<<"7...ingest clipboard"<<std::endl;
 std::cout<<"8...search for element:"<<std::endl;
 std::cout<<"11...clipboard search:"<<std::endl;
 */
-std::string callback(std::vector<std::string>A ){
+std::string callback(std::string A){
     std::string temp="";
     std::string op="<form action=\"/action_page.php\" method=\"POST\"><label for=\"Option\">Options found:</label><select id=\"option\" name=\"option\"><option value=\"bulk insert\">bulk insert</option><option value=\"import file\">import file</option><option value=\"scan files\">scan files</option><option value=\"expand table\">expand table</option><option value=\"scan csv file\">scan csv file</option><option value=\"ingest clipboard\">ingest clipboard</option><option value=\"clipboard search\">clipboard search</option></select><input type=\"text\" id=\"link\" name=\"link\" value=\"\"><br><input type=\"submit\" value=\"Submit\"></form>";
     std::string op1="<form action=\"/action_page.php\" method=\"POST\"><label for=\"Option\">Options found:</label><select id=\"option\" name=\"option\">";
@@ -32,9 +32,13 @@ std::string query="<form action=\"/\" method=\"POST\"><label for=\"fname\">Qeuer
 std::string clip="<form action=\"/\" method=\"POST\"><input type=\"submit\" name=\"clip\" value=\"Copy to Clipboard\"></form>";
     std::string first="<style>.dropbtn {background-color: #4CAF50;color: white;padding: 16px;font-size: 16px;border: none;}.dropdown {position: relative;display: inline-block;}.dropdown-content {display: none;position: absolute;background-color: #f1f1f1;min-width: 160px;box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);z-index: 1;}.dropdown-content a {color: black;padding: 12px 16px;text-decoration: none;display: block;}.dropdown-content a:hover {background-color: #ddd;}.dropdown:hover .dropdown-content {display: block;}.dropdown:hover .dropbtn {background-color: #3e8e41;}</style>";
    std::string box="<form action=\"/action_page.php\" method=\"POST\"><label for=\"fname\">First name:</label><br><input type=\"text\" id=\"fname\" name=\"fname\" value=\"John\"><br><input type=\"submit\" value=\"Submit\"></form>";
+   std::cout << "HHTP BODY" << std::endl;
+   std::cout << A << std::endl;
+    /*
     for(auto it:A){temp+=it+"&#13";//std::cout<<it<<std::endl;
-    }
-    std::string out="<!DOCTYPE html><html><head>"+first+"<textarea rows=\"30\" cols=\"205\" placeholder=test>"+temp+"</textarea>"+query+op1+option(A)+op2+op+clip+"</body></html>";
+    }*/
+   // std::string out="<!DOCTYPE html><html><head>"+first+"<textarea rows=\"30\" cols=\"205\" placeholder=test>"+temp+"</textarea>"+query+op1+option(A)+op2+op+clip+"</body></html>";
+   std::string out="test.json";
     return(out);};
 
 int main(//int argc, char* argv[]
@@ -52,7 +56,8 @@ int main(//int argc, char* argv[]
     }
     */
 
-     std::function<std::string(std::vector<std::string>)> func=callback;
+     //std::function<std::string(std::vector<std::string>)> func=callback;
+          std::function<std::string(std::string)> func=callback;
    start_http_server(func);
    /*
     char *ipaddress="127.0.0.1";

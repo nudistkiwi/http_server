@@ -4,7 +4,7 @@
 #include <boost/asio/dispatch.hpp>
 #include <boost/asio/strand.hpp>
 #include <boost/config.hpp>
-#include <boost/tokenizer.hpp>
+//#include <boost/tokenizer.hpp>
 #include <algorithm>
 #include <cstdlib>
 #include <functional>
@@ -109,7 +109,7 @@ handle_request(
     //char split_char = '&';
     //std::istringstream split(req.body());
   
-
+    std::cout << req.base() << std::endl;
    // now use `tokens`
     //std::cout<<req.body()<<std::endl;
    // for(auto it:tokens)
@@ -153,46 +153,33 @@ handle_request(
     };
 
   // Respond to POST request
-    if( req.method() == http::verb::post){
-    
-  beast::error_code ec2;
-    http::file_body::value_type body2;
-    std::cout<<req.body()<<std::endl;
-    std::string path2="test.json";
-    body2.open(path2.c_str(), beast::file_mode::scan, ec2);
+    //if(false){
+    if (req.method() == http::verb::post) {// function(req.body()); }
+    //if (false) {
+    //if( req.method() == http::verb::post){
+    std::string out_path=function(req.body());
+    beast::error_code ecc;
+    http::file_body::value_type p_body;
+  
+ 
+    p_body.open(out_path.c_str(), beast::file_mode::scan, ecc);
 
     // Handle the case where the file doesn't exist
-    if(ec2 == beast::errc::no_such_file_or_directory)
+    if(ecc == beast::errc::no_such_file_or_directory)
         return send(not_found(req.target()));
 
     http::response<http::file_body> res{
         std::piecewise_construct,
-        std::make_tuple(std::move(body2)),
+        std::make_tuple(std::move(p_body)),
         std::make_tuple(http::status::ok, req.version())};
     res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-    res.set(http::field::content_type, mime_type(path2));
+    res.set(http::field::content_type, mime_type(out_path));
    // res.content_length(size);
     res.keep_alive(req.keep_alive());
     return send(std::move(res));
-  //  auto const server =
-   // [&req](beast::string_view what)
-   // {
-       /*
-        http::response<http::string_body> res{http::status::ok, req.version()};
-       
-        res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-        res.set(http::field::content_type, "text/html");
-        res.keep_alive(req.keep_alive());
-        
-        //res.body() = std::string("<!DOCTYPE html><html><body><h1>My First Heading</h1><p>My first paragraph.</p></body></html>");
-       // res.body() = function(tokens);
-       // res.body() = "";
-        res.prepare_payload();
-        return send(std::move(res));*/
-    //};
+
 
     }
-
 
 
     // Make sure we can handle the method
@@ -237,10 +224,6 @@ handle_request(
         res.keep_alive(req.keep_alive());
         return send(std::move(res));
     }
-
- 
-
-
 
 
 
@@ -305,7 +288,7 @@ class session : public std::enable_shared_from_this<session>
     http::request<http::string_body> req_;
     std::shared_ptr<void> res_;
     send_lambda lambda_;
-    std::function<std::string(std::vector<std::string>)> function_;
+    std::function<std::string(std::string)> function_;
  //   template <typename func>
   //  func function_;    
 
@@ -425,7 +408,7 @@ class listener : public std::enable_shared_from_this<listener>
     net::io_context& ioc_;
     tcp::acceptor acceptor_;
     std::shared_ptr<std::string const> doc_root_;
-    std::function<std::string(std::vector<std::string>)> function_;
+    std::function<std::string(std::string)> function_;
 
 public:
 template <typename call>
@@ -521,7 +504,8 @@ private:
 
 
 
-void start_http_server(std::function<std::string(std::vector<std::string> )> func){
+//void start_http_server(std::function<std::string(std::vector<std::string> )> func){
+ void start_http_server(std::function<std::string(std::string)> func){
 
  //char *ipaddress="127.0.0.1";
    char *ipaddress="0.0.0.0";
