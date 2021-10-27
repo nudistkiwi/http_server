@@ -110,7 +110,7 @@ handle_request(
     //char split_char = '&';
     //std::istringstream split(req.body());
   
-    std::cout << req.base() << std::endl;
+    std::cout << req.base() << std::endl; // DOES NOT WORK ON LINUX
    // now use `tokens`
     //std::cout<<req.body()<<std::endl;
    // for(auto it:tokens)
@@ -331,13 +331,27 @@ public:
     {
         // Make the request empty before reading,
         // otherwise the operation behavior is undefined.
+       
+       
+       /*
+        // Construct a new parser for each message
+        parser_.emplace();
+
+        // Apply a reasonable limit to the allowed size
+        // of the body in bytes to prevent abuse.
+        parser_->body_limit(10000);
+
+        */
+        
         req_ = {};
 
         // Set the timeout.
         stream_.expires_after(std::chrono::seconds(30));
 
         // Read a request
-        http::async_read(stream_, buffer_, req_,
+        http::async_read(stream_, buffer_, 
+        req_,
+        //*parser_;
             beast::bind_front_handler(
                 &session::on_read,
                 shared_from_this()));
@@ -362,6 +376,7 @@ public:
         
        // handle_request(*doc_root_, std::move(req_), lambda_,[](std::vector<std::string>){return(std::string("<!DOCTYPE html><html><body><h1>My Callback</h1><p>My first callback.</p></body></html>"));});
      handle_request(*doc_root_, std::move(req_), lambda_,function_);
+    // handle_request(*doc_root_, parser_->release(), lambda_,function_);
    
     
     }
