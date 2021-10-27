@@ -290,6 +290,7 @@ class session : public std::enable_shared_from_this<session>
     std::shared_ptr<void> res_;
     send_lambda lambda_;
     std::function<std::string(std::string)> function_;
+    boost::optional<http::request_parser<http::string_body>> parser_;
  //   template <typename func>
   //  func function_;    
 
@@ -333,15 +334,15 @@ public:
         // otherwise the operation behavior is undefined.
        
        
-       /*
+       
         // Construct a new parser for each message
         parser_.emplace();
 
         // Apply a reasonable limit to the allowed size
         // of the body in bytes to prevent abuse.
-        parser_->body_limit(10000);
+        parser_->body_limit(500000000);
 
-        */
+        
         
         req_ = {};
 
@@ -350,8 +351,8 @@ public:
 
         // Read a request
         http::async_read(stream_, buffer_, 
-        req_,
-        //*parser_;
+        //req_,
+        *parser_,
             beast::bind_front_handler(
                 &session::on_read,
                 shared_from_this()));
@@ -375,8 +376,8 @@ public:
         // Send the response
         
        // handle_request(*doc_root_, std::move(req_), lambda_,[](std::vector<std::string>){return(std::string("<!DOCTYPE html><html><body><h1>My Callback</h1><p>My first callback.</p></body></html>"));});
-     handle_request(*doc_root_, std::move(req_), lambda_,function_);
-    // handle_request(*doc_root_, parser_->release(), lambda_,function_);
+     //handle_request(*doc_root_, std::move(req_), lambda_,function_);
+     handle_request(*doc_root_, parser_->release(), lambda_,function_);
    
     
     }

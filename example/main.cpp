@@ -56,7 +56,7 @@ std::string clip="<form action=\"/\" method=\"POST\"><input type=\"submit\" name
        }
    */
 
-   int N;
+   int N;/*
    const std::string filename = "New Microsoft Excel Worksheet.xlsx";
    std::ifstream input(filename.c_str(), std::ios::binary);
    std::ifstream src;
@@ -70,18 +70,18 @@ std::string clip="<form action=\"/\" method=\"POST\"><input type=\"submit\" name
    input.read(data, N);
    std::string help(data, N);
    delete[] data;
-
+   */
    std::ofstream stream("testo.xlsx", std::ios::binary);
    stream <<A;
    stream.close();
    std::string out="test.json";
-
+   /*
    dst.open("testo2.xlsx", std::ios::out | std::ios::binary);
    dst << src.rdbuf();
 
    src.close();
    dst.close();
-
+   */
     return(out);};
 
 int main(//int argc, char* argv[]
