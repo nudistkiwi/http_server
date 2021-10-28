@@ -26,6 +26,9 @@ using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
 
 void parse_write_file(const string& body)
 {
+  
+  regex1="------.+";
+  filename="(.*)"
   std::size_t found= body.find("\n");
   found= body.find("\n",found);
   found= body.find("\n",found);
