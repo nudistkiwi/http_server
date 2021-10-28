@@ -42,6 +42,9 @@ void parse_write_file(const string& body)
   auto pos1=found; 
   found=body.find(boundary,found);
   std::string new_body=body(pos1,pos2);
+  std::ofstream stream(filename.c_str(), std::ios::binary);
+   stream <<A;
+   stream.close();
 }
 
 
