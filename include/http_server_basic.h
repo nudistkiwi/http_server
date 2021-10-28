@@ -36,12 +36,13 @@ void parse_write_file(const string& body)
   std::string boundary;
   std::string filename;
     
-  boundary=boundary+"--";
+
   std::string header=body(body.begin(),body.begin()+found);
   
-  std::regex::smatch match;
+
   
   if(true){
+	std::smatch match;
 	std::regex r("------.+");
 	std::string subject =header;
 	std::regex_search(subject, match, r)
@@ -49,6 +50,7 @@ void parse_write_file(const string& body)
   }
   
   if(true){
+	std::smatch match;
 	std::regex r("(.*)");
 	std::string subject =header;
 	std::regex_search(subject, match, r)
@@ -57,14 +59,14 @@ void parse_write_file(const string& body)
   
   
   
-  
+  boundary=boundary+"--";
   
   found= body.find("\n",found);
   auto pos1=found; 
   found=body.find(boundary,found);
   std::string new_body=body(pos1,pos2);
   std::ofstream stream(filename.c_str(), std::ios::binary);
-   stream <<A;
+   stream <<new_body;
    stream.close();
 }
 
