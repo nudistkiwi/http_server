@@ -26,9 +26,10 @@ using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
 
 void parse_write_file(const string& body)
 {
-  
-  regex1="------.+";
-  filename="(.*)"
+
+
+
+ 
   std::size_t found= body.find("\n");
   found= body.find("\n",found);
   found= body.find("\n",found);
@@ -37,7 +38,27 @@ void parse_write_file(const string& body)
     
   boundary=boundary+"--";
   std::string header=body(body.begin(),body.begin()+found);
-     
+  
+  std::regex::smatch match;
+  
+  if(true){
+	std::regex r("------.+");
+	std::string subject =header;
+	std::regex_search(subject, match, r)
+  boundary=match[0];
+  }
+  
+  if(true){
+	std::regex r("(.*)");
+	std::string subject =header;
+	std::regex_search(subject, match, r)
+  filename=match[0];
+  }
+  
+  
+  
+  
+  
   found= body.find("\n",found);
   auto pos1=found; 
   found=body.find(boundary,found);
