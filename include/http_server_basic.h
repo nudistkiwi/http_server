@@ -15,6 +15,8 @@
 #include <vector>
 #include <sstream>
 #include <fstream>
+#include <regex>
+
 
 namespace beast = boost::beast;         // from <boost/beast.hpp>
 namespace http = beast::http;           // from <boost/beast/http.hpp>
@@ -22,7 +24,22 @@ namespace net = boost::asio;            // from <boost/asio.hpp>
 using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
 
 
-
+void parse_write_file(const string& body)
+{
+  std::size_t found= body.find("\n");
+  found= body.find("\n",found);
+  found= body.find("\n",found);
+  std::string boundary;
+  std::string filename;
+    
+  boundary=boundary+"--";
+  std::string header=body(body.begin(),body.begin()+found);
+     
+  found= body.find("\n",found);
+  auto pos1=found; 
+  found=body.find(boundary,found);
+  std::string new_body=body(pos1,pos2);
+}
 
 
 // Return a reasonable mime type based on the extension of a file.
