@@ -33,7 +33,7 @@ std::string clip="<form action=\"/\" method=\"POST\"><input type=\"submit\" name
     std::string first="<style>.dropbtn {background-color: #4CAF50;color: white;padding: 16px;font-size: 16px;border: none;}.dropdown {position: relative;display: inline-block;}.dropdown-content {display: none;position: absolute;background-color: #f1f1f1;min-width: 160px;box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);z-index: 1;}.dropdown-content a {color: black;padding: 12px 16px;text-decoration: none;display: block;}.dropdown-content a:hover {background-color: #ddd;}.dropdown:hover .dropdown-content {display: block;}.dropdown:hover .dropbtn {background-color: #3e8e41;}</style>";
    std::string box="<form action=\"/action_page.php\" method=\"POST\"><label for=\"fname\">First name:</label><br><input type=\"text\" id=\"fname\" name=\"fname\" value=\"John\"><br><input type=\"submit\" value=\"Submit\"></form>";
    std::cout << "HHTP BODY" << std::endl;
-   std::cout << A << std::endl;
+  // std::cout << A << std::endl;
     /*
     for(auto it:A){temp+=it+"&#13";//std::cout<<it<<std::endl;
     }*/
@@ -71,9 +71,9 @@ std::string clip="<form action=\"/\" method=\"POST\"><input type=\"submit\" name
    std::string help(data, N);
    delete[] data;
    */
-   std::ofstream stream("testo.xlsx", std::ios::binary);
-   stream <<A;
-   stream.close();
+  // std::ofstream stream("testo.xlsx", std::ios::binary);
+  // stream <<A;
+  // stream.close();
    std::string out="test.json";
    /*
    dst.open("testo2.xlsx", std::ios::out | std::ios::binary);

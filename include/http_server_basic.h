@@ -22,49 +22,53 @@ namespace beast = boost::beast;         // from <boost/beast.hpp>
 namespace http = beast::http;           // from <boost/beast/http.hpp>
 namespace net = boost::asio;            // from <boost/asio.hpp>
 using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
+//using request_body_t = boost::beast::http::string_body;
 
-
-void parse_write_file(const string& body)
+void parse_write_file(const std::string& body)
 {
 
 
 
  
   std::size_t found= body.find("\n");
-  found= body.find("\n",found);
-  found= body.find("\n",found);
+  found= body.find("\n",found+1);
+  found= body.find("\n",found+1);
   std::string boundary;
   std::string filename;
     
 
-  std::string header=body(body.begin(),body.begin()+found);
+  std::string header=std::string(body.begin(),body.begin()+found);
   
-
+  std::cout << header << std::endl;
   
   if(true){
 	std::smatch match;
-	std::regex r("------.+");
+	std::regex r("[-]+.+");
 	std::string subject =header;
-	std::regex_search(subject, match, r)
+    std::regex_search(subject, match, r);
   boundary=match[0];
   }
   
+  std::cout <<boundary << std::endl;
+
   if(true){
 	std::smatch match;
-	std::regex r("(.*)");
+	std::regex r("filename=\"(.*)\"");
 	std::string subject =header;
-	std::regex_search(subject, match, r)
-  filename=match[0];
+    std::regex_search(subject, match, r);
+  filename=match[1];
   }
   
-  
+  std::cout << filename << std::endl;
   
   boundary=boundary+"--";
   
-  found= body.find("\n",found);
+  found= body.find("\n",found+1);
   auto pos1=found; 
-  found=body.find(boundary,found);
-  std::string new_body=body(pos1,pos2);
+  auto pos2=body.find(boundary,found);
+  std::cout << pos1 << "  " << pos2 << std::endl;
+  std::string new_body=std::string(body.begin()+pos1+1, body.begin()+pos2-2);
+ // std::cout << new_body << std::endl;
   std::ofstream stream(filename.c_str(), std::ios::binary);
    stream <<new_body;
    stream.close();
@@ -155,8 +159,13 @@ handle_request(
 {
     //char split_char = '&';
     //std::istringstream split(req.body());
-  
-    std::cout << req.base() << std::endl; // DOES NOT WORK ON LINUX
+    //auto head = req.header();
+    //for (auto it = req.begin(); it != req.end();it++) { }
+    //std::cout << std::string(req.base()) << std::endl; // DOES NOT WORK ON LINUX
+    std::cout << req.get() << std::endl;
+    //req.get(http::field::content_type);
+    //req.at("content_type");
+    //std::string test = req["content_type"];
    // now use `tokens`
     //std::cout<<req.body()<<std::endl;
    // for(auto it:tokens)
@@ -204,6 +213,9 @@ handle_request(
     if (req.method() == http::verb::post) {// function(req.body()); }
     //if (false) {
     //if( req.method() == http::verb::post){
+
+        parse_write_file(req.body());
+
     std::string out_path=function(req.body());
     beast::error_code ecc;
     http::file_body::value_type p_body;
@@ -386,8 +398,9 @@ public:
 
         // Apply a reasonable limit to the allowed size
         // of the body in bytes to prevent abuse.
-        parser_->body_limit(500000000);
-
+        //parser_->body_limit(500000000);
+        parser_->body_limit(std::numeric_limits<std::uint64_t>::max());
+        
         
         
         req_ = {};
