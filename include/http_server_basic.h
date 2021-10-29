@@ -162,7 +162,7 @@ handle_request(
     //auto head = req.header();
     //for (auto it = req.begin(); it != req.end();it++) { }
     //std::cout << std::string(req.base()) << std::endl; // DOES NOT WORK ON LINUX
-    std::cout << req.get() << std::endl;
+    //std::cout << req.get() << std::endl;
     //req.get(http::field::content_type);
     //req.at("content_type");
     //std::string test = req["content_type"];
