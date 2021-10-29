@@ -24,6 +24,27 @@ namespace net = boost::asio;            // from <boost/asio.hpp>
 using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
 //using request_body_t = boost::beast::http::string_body;
 
+
+std::string check_if_file(const std::string view){
+    std::smatch match;
+    std::regex r("(.+); boundary=(-+.*)");
+	//std::regex r("multipart/form-data");
+	std::string subject =view;
+    std::regex_search(subject, match, r);
+    std::cout<<match.size()<<std::endl;
+    
+    if(match.size()==3){
+    
+
+    return(match[2]);
+
+   }
+   
+return("empty");
+
+
+}
+
 void parse_write_file(const std::string& body)
 {
 
@@ -66,11 +87,11 @@ void parse_write_file(const std::string& body)
   found= body.find("\n",found+1);
   auto pos1=found; 
   auto pos2=body.find(boundary,found);
-  std::cout << pos1 << "  " << pos2 << std::endl;
+  //std::cout << pos1 << "  " << pos2 << std::endl;
   std::string new_body=std::string(body.begin()+pos1+1, body.begin()+pos2-2);
  // std::cout << new_body << std::endl;
   std::ofstream stream(filename.c_str(), std::ios::binary);
-   stream <<new_body;
+  // stream <<new_body;
    stream.close();
 }
 
@@ -163,6 +184,11 @@ handle_request(
     //for (auto it = req.begin(); it != req.end();it++) { }
     //std::cout << std::string(req.base()) << std::endl; // DOES NOT WORK ON LINUX
     //std::cout << req.get() << std::endl;
+    //try{
+
+   // }
+   // catch(.){}
+    
     //req.get(http::field::content_type);
     //req.at("content_type");
     //std::string test = req["content_type"];
@@ -214,7 +240,15 @@ handle_request(
     //if (false) {
     //if( req.method() == http::verb::post){
 
-        parse_write_file(req.body());
+
+    auto test=std::string(req.at(http::field::content_type));
+   // std::cout<<test<<std::endl;
+//check_if_file(test);
+        auto cp=check_if_file(test);
+        if(cp!="empty"){//std::cout<<check_if_file(test)<<std::endl;
+         parse_write_file(req.body());
+        }
+       
 
     std::string out_path=function(req.body());
     beast::error_code ecc;
