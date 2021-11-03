@@ -241,39 +241,42 @@ handle_request(
     //if( req.method() == http::verb::post){
 
 
-    auto test=std::string(req.at(http::field::content_type));
-   // std::cout<<test<<std::endl;
-//check_if_file(test);
-        auto cp=check_if_file(test);
-        if(cp!="empty"){//std::cout<<check_if_file(test)<<std::endl;
-         parse_write_file(req.body());
+        auto test = std::string(req.at(http::field::content_type));
+        // std::cout<<test<<std::endl;
+     //check_if_file(test);
+        std::string out_path;
+        auto cp = check_if_file(test);
+        if (cp != "empty") {//std::cout<<check_if_file(test)<<std::endl;
+            parse_write_file(req.body());
+            out_path = "test.json";
         }
-       
 
-    std::string out_path=function(req.body());
-    beast::error_code ecc;
-    http::file_body::value_type p_body;
-  
- 
-    p_body.open(out_path.c_str(), beast::file_mode::scan, ecc);
-
-    // Handle the case where the file doesn't exist
-    if(ecc == beast::errc::no_such_file_or_directory)
-        return send(not_found(req.target()));
-
-    http::response<http::file_body> res{
-        std::piecewise_construct,
-        std::make_tuple(std::move(p_body)),
-        std::make_tuple(http::status::ok, req.version())};
-    res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-    res.set(http::field::content_type, mime_type(out_path));
-   // res.content_length(size);
-    res.keep_alive(req.keep_alive());
-    return send(std::move(res));
+        else {
+             out_path = function(req.body());
+        }
+            beast::error_code ecc;
+            http::file_body::value_type p_body;
 
 
+            p_body.open(out_path.c_str(), beast::file_mode::scan, ecc);
+
+            // Handle the case where the file doesn't exist
+            if (ecc == beast::errc::no_such_file_or_directory)
+                return send(not_found(req.target()));
+
+            http::response<http::file_body> res{
+                std::piecewise_construct,
+                std::make_tuple(std::move(p_body)),
+                std::make_tuple(http::status::ok, req.version()) };
+            res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+            res.set(http::field::content_type, mime_type(out_path));
+            // res.content_length(size);
+            res.keep_alive(req.keep_alive());
+            return send(std::move(res));
+
+
+        
     }
-
 
     // Make sure we can handle the method
     if( req.method() != http::verb::get &&
@@ -616,35 +619,89 @@ private:
 
 //void start_http_server(std::function<std::string(std::vector<std::string> )> func){
  void start_http_server(std::function<std::string(std::string)> func){
+    
+     char* ipaddress = "0.0.0.0";
+     char* ports = "9090";
+     char* filelocation = ".";
+     char* threadnum = "1";
 
+     std::vector<std::string> lines;
+     std::string line;
+     std::ifstream myfile("settings.ini");
+     if (myfile.is_open())
+     {
+         while (getline(myfile, line))
+         {
+             lines.push_back(line);
+             std::cout << line << '\n';
+         }
+         myfile.close();
+
+         auto const address = net::ip::make_address(lines[0].c_str());
+         auto const port = static_cast<unsigned short>(std::atoi(lines[1].c_str()));
+         auto const doc_root = std::make_shared<std::string>(lines[2].c_str());
+         auto const threads = std::max<int>(1, std::atoi(lines[3].c_str()));
+
+         // The io_context is required for all I/O
+         net::io_context ioc{ threads };
+
+         // Create and launch a listening port
+         //std::function<std::string(std::vector<std::string>)> func=[](std::vector<std::string> A){return(A[0]);};
+
+         std::make_shared<listener>(
+             ioc,
+             tcp::endpoint{ address, port },
+             doc_root,
+             //[](std::vector<std::string> A){return(A[0]);}
+             func
+             )->run();
+         ioc.run();
+
+
+
+     }
+
+     else {
+
+
+         std::cout << "Unable to open file";
+         
+         auto const address = net::ip::make_address(ipaddress);
+         auto const port = static_cast<unsigned short>(std::atoi(ports));
+         auto const doc_root = std::make_shared<std::string>(filelocation);
+         auto const threads = std::max<int>(1, std::atoi(threadnum));
+
+         // The io_context is required for all I/O
+         net::io_context ioc{ threads };
+
+         // Create and launch a listening port
+         //std::function<std::string(std::vector<std::string>)> func=[](std::vector<std::string> A){return(A[0]);};
+
+         std::make_shared<listener>(
+             ioc,
+             tcp::endpoint{ address, port },
+             doc_root,
+             //[](std::vector<std::string> A){return(A[0]);}
+             func
+             )->run();
+         ioc.run();
+
+     }
  //char *ipaddress="127.0.0.1";
-   char *ipaddress="0.0.0.0";
-    char *ports="9090";
-    char *filelocation=".";
-    char *threadnum="1";
+
+
     /*
     auto const address = net::ip::make_address(argv[1]);
     auto const port = static_cast<unsigned short>(std::atoi(argv[2]));
     auto const doc_root = std::make_shared<std::string>(argv[3]);
     auto const threads = std::max<int>(1, std::atoi(argv[4]));
-    */
+   
     auto const address = net::ip::make_address(ipaddress);
     auto const port = static_cast<unsigned short>(std::atoi(ports));
     auto const doc_root = std::make_shared<std::string>(filelocation);
     auto const threads = std::max<int>(1, std::atoi(threadnum));
-    // The io_context is required for all I/O
-    net::io_context ioc{threads};
+     */
 
-    // Create and launch a listening port
-    //std::function<std::string(std::vector<std::string>)> func=[](std::vector<std::string> A){return(A[0]);};
-     
-    std::make_shared<listener>(
-        ioc,
-        tcp::endpoint{address, port},
-        doc_root,
-        //[](std::vector<std::string> A){return(A[0]);}
-       func
-        )->run();
-ioc.run();
+
 
 };
