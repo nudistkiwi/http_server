@@ -90,6 +90,7 @@ void parse_write_file(const std::string& body)
   //std::cout << pos1 << "  " << pos2 << std::endl;
   std::string new_body=std::string(body.begin()+pos1+1, body.begin()+pos2-2);
  // std::cout << new_body << std::endl;
+ filename="downloads/"+filename;
   std::ofstream stream(filename.c_str(), std::ios::binary);
    stream <<new_body;
    stream.close();
